@@ -1,4 +1,4 @@
-name: CI
+name: CI x Invisirisk
 
 on:
   push:
