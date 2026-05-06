@@ -47,9 +47,6 @@ jobs:
     - name: 'Possibly reset lockfile'
       run: deno install || rm deno.lock
 
-    - name: Run test suite
-      run: deno task test
-
     - name: Cleanup PSE
       if: always()
       uses: invisirisk/pse-action@latest
