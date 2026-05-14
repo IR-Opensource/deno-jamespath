@@ -24,66 +24,77 @@ jobs:
       fail-fast: false # run each branch to completion
 
     steps:
-    - name: Setup PSE
-      uses: invisirisk/pse-action@latest
-      with:
-         api_url: "https://app.stage.invisirisk.com"
-         app_token: ${{secrets.IR_API_KEY}}
-         
-    - name: Checkout source
-      uses: actions/checkout@v5
+      # ============= InvisiRisk Setup =============
+      - name: Setup PSE
+        uses: invisirisk/pse-action@feature/intermediate-deno-rust-ca-devtest
+        with:
+          api_url: "https://app.stage.invisirisk.com"
+          app_token: ${{ secrets.IR_API_KEY }}
+          pse_image_tag: "dev-test"
+          debug: true
+      # ============= InvisiRisk Setup End =============
+      - name: Checkout source
+        uses: actions/checkout@v5
 
-    - name: Cache Deno deps
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/deno
-        key: deno/${{ matrix.deno-version }}-${{ github.sha }}
+      - name: Cache Deno deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/deno
+          key: deno/${{ matrix.deno-version }}-${{ github.sha }}
 
-    - name: Use Deno ${{ matrix.deno-version }}
-      uses: denoland/setup-deno@v2
-      with:
-        deno-version: ${{ matrix.deno-version }}
+      - name: Use Deno ${{ matrix.deno-version }}
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: ${{ matrix.deno-version }}
 
-    - name: 'Possibly reset lockfile'
-      run: deno install || rm deno.lock
+      - name: 'Possibly reset lockfile'
+        run: deno install || rm deno.lock
 
-    - name: Cleanup PSE
-      if: always()
-      uses: invisirisk/pse-action@latest
-      with:
-        cleanup: "true"
-  
+      # ============= InvisiRisk Cleanup =============
+      - name: Cleanup PSE
+        if: always()
+        uses: invisirisk/pse-action@feature/intermediate-deno-rust-ca-devtest
+        with:
+          api_url: "https://app.stage.invisirisk.com"
+          cleanup: "true"
+      # ============= InvisiRisk Cleanup End =============
 
   dry-run:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Setup PSE
-      uses: invisirisk/pse-action@latest
-      with:
-         api_url: "https://app.stage.invisirisk.com"
-         app_token: ${{secrets.IR_API_KEY}}
-         
-    - name: Checkout source
-      uses: actions/checkout@v5
+      # ============= InvisiRisk Setup =============
+      - name: Setup PSE
+        uses: invisirisk/pse-action@feature/intermediate-deno-rust-ca-devtest
+        with:
+          api_url: "https://app.stage.invisirisk.com"
+          app_token: ${{ secrets.IR_API_KEY }}
+          pse_image_tag: "dev-test"
+          debug: true
+      # ============= InvisiRisk Setup End =============
+      - name: Checkout source
+        uses: actions/checkout@v5
 
-    - name: Use stable Deno
-      uses: denoland/setup-deno@v2
+      - name: Use stable Deno
+        uses: denoland/setup-deno@v2
 
-    - name: Cache Deno deps
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/deno
-        key: deno/publish-${{ github.sha }}
+      - name: Cache Deno deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/deno
+          key: deno/publish-${{ github.sha }}
 
-    - name: Check publish rules
-      run: time deno publish --dry-run --allow-dirty
+      - name: Check publish rules
+        run: time deno publish --dry-run --allow-dirty
 
-    - name: Cleanup PSE
-      if: always()
-      uses: invisirisk/pse-action@latest
-      with:
-        cleanup: "true"
+      # ============= InvisiRisk Cleanup =============
+      - name: Cleanup PSE
+        if: always()
+        uses: invisirisk/pse-action@feature/intermediate-deno-rust-ca-devtest
+        with:
+          api_url: "https://app.stage.invisirisk.com"
+          cleanup: "true"
+      # ============= InvisiRisk Cleanup End =============
 
 
   publish:
@@ -96,28 +107,35 @@ jobs:
       id-token: write
 
     steps:
-    - name: Setup PSE
-      uses: invisirisk/pse-action@latest
-      with:
-         api_url: "https://app.stage.invisirisk.com"
-         app_token: ${{secrets.IR_API_KEY}}
-         
-    - name: Checkout source
-      uses: actions/checkout@v5
+      # ============= InvisiRisk Setup =============
+      - name: Setup PSE
+        uses: invisirisk/pse-action@feature/intermediate-deno-rust-ca-devtest
+        with:
+          api_url: "https://app.stage.invisirisk.com"
+          app_token: ${{ secrets.IR_API_KEY }}
+          pse_image_tag: "dev-test"
+          debug: true
+      # ============= InvisiRisk Setup End =============
+          
+      - name: Checkout source
+        uses: actions/checkout@v5
 
-    - name: Use stable Deno
-      uses: denoland/setup-deno@v2
+      - name: Use stable Deno
+        uses: denoland/setup-deno@v2
 
-    - name: Cache Deno deps
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/deno
-        key: deno/publish-${{ github.sha }}
-    - name: Publish now
-      run: deno publish
+      - name: Cache Deno deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/deno
+          key: deno/publish-${{ github.sha }}
+      - name: Publish now
+        run: deno publish
 
-    - name: Cleanup PSE
-      if: always()
-      uses: invisirisk/pse-action@latest
-      with:
-        cleanup: "true"
+      # ============= InvisiRisk Cleanup =============
+      - name: Cleanup PSE
+        if: always()
+        uses: invisirisk/pse-action@feature/intermediate-deno-rust-ca-devtest
+        with:
+          api_url: "https://app.stage.invisirisk.com"
+          cleanup: "true"
+      # ============= InvisiRisk Cleanup End =============
